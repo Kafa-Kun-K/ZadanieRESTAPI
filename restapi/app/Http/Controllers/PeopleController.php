@@ -7,52 +7,52 @@ use App\Models\People;
 
 class PeopleController extends Controller
 {
-    public function index(){
-        $fpeople = People::all();
-        return view('people/index', ['fpeople' => $fpeople]);
-        
+    public function create(Request $request)
+    {
+        $people=new People();
+        $people->name=$request->name;
+        $people->surname=$request->surname;
+        $people->phonenumber=$request->phonenumber;
+        $people->street=$request->street;
+        $people->city=$request->city;
+
+        $people->save();
+
+        return response()->json('Added succesfully');
     }
 
-    public function create(){
-        return view('people/create');
+    public function update(Request $request)
+    {
+        $people=People::findorfail($request->id);
+        $people->name=$request->name;
+        $people->surname=$request->surname;
+        $people->phonenumber=$request->phonenumber;
+        $people->street=$request->street;
+        $people->city=$request->city;
+
+        $people->update();
+
+        return response()->json('Updated succesfully');
     }
 
-    public function store(Request $request){
-        $data = $request->validate([
-            'name' => 'required',
-            'surname' => 'required',
-            'phonenumber' => 'required',
-            'street' => 'required',
-            'city' => 'required'
-        ]);
+    public function delete(Request $request)
+    {
+        $people=People::findorfail($request->id)->delete();
 
-        $newPeople = People::create($data);
-
-        return redirect(route('people.index'));
-
+        return response()->json('Deleted succesfully');
     }
 
-    public function edit(People $people){
-        return view('people/edit', ['people' => $people]);
+    public function read(Request $request)
+    {
+        $people = People::findorfail($request->id);
+
+        return response()->json($people);
     }
 
-    public function update(People $people, Request $request){
-        $data = $request->validate([
-            'name' => 'required',
-            'surname' => 'required',
-            'phonenumber' => 'required',
-            'street' => 'required',
-            'city' => 'required'
-        ]);
+    public function readall()
+    {
+        $people=People::all();
 
-        $people->update($data);
-
-        return redirect(route('people.index'))->with('success', 'People Updated Succesffully');
-
-    }
-
-    public function destroy(People $people){
-        $people->delete();
-        return redirect(route('people.index'))->with('success', 'People deleted Succesffully');
+        return response()->json($people);
     }
 }

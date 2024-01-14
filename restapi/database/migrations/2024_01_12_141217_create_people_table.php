@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->text('name');
             $table->text('surname');
-            $table->integer('phonenumber');
+            $table->string('phonenumber');
             $table->text('street');
             $table->text('city');
             $table->timestamps();
